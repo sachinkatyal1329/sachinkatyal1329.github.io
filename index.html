@@ -1,394 +1,470 @@
-//
-//  PlaybackView.swift
-//  IntelliBeat
-//
-//  Created by Sachin Katyal on 7/1/23.
-//
-
-import SwiftUI
-import BottomSheet
-
-struct PlaybackView: View {
-    @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject var mixViewModel: MixViewModel
-    @State var bottomSheetPosition: BottomSheetPosition = .dynamicBottom
-    @State private var backgroundImage: String = "Cyan background"
-    
-    var body: some View {
-        ZStack {
-            PlaybackBackground()
-            // Background image
-            
-//            let backgroundColor = mixViewModel.getColorFromTrack(song: mixViewModel.getCurrentSong()).backgroundGradient
-             
-//            backgroundColor.ignoresSafeArea(.container)
-            
-            // Image(backgroundImage)
-            //     .resizable()
-            //     .aspectRatio(contentMode: .fill)
-            //     .ignoresSafeArea(.container)
-            
-            // Main content
-            MainView()
-                .bottomSheet(
-                    bottomSheetPosition: self.$bottomSheetPosition,
-                    switchablePositions: [.dynamicBottom, .dynamicTop],
-                    headerContent: { PlaybackHeaderView() }
-                ) {
-                    PlaybackSheetView()
-                }
-                .showDragIndicator(true)
-                .customBackground(
-         //            Color("Background Color")
-         //            .cornerRadius(25)
-                         BlurView(style: .systemThinMaterialDark )
-//                             .overlay(Color.blue.opacity(0.15).blendMode(.multiply))
-                             .cornerRadius(25)
-                             .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 0)
-                )
-                .foregroundColor(.white)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On Aux Gradient Background</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@200..900&family=Mona+Sans+Wide+Black&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(.white)
-                    }
-                }
+
+        body {
+            height: 100vh;
+            font-family: "Mona Sans Wide Black", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 900;
+            background: radial-gradient(ellipse at center, 
+                var(--gradient-color) 0%, 
+                #1a1a2e 75%,
+                #1a1a2e 100%);
+            background-size: 110% 110%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+            animation: pulseGradient 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite,
+                       cycleColors 30s linear infinite;
+            transform-origin: center center;
+            --gradient-color: #FB4BBF;
+        }
+
+        @keyframes pulseGradient {
+            0%, 100% {
+                background-size: 110% 110%;
+                background-position: center center;
+            }
+            50% {
+                background-size: 160% 160%;
+                background-position: center center;
             }
         }
-        .onAppear {
-            updateBackgroundImage()
+
+        @keyframes cycleColors {
+            0%, 100% {
+                --gradient-color: #FB4BBF;
+            }
+            20% {
+                --gradient-color: #FF9536;
+            }
+            40% {
+                --gradient-color: #FAFF00;
+            }
+            60% {
+                --gradient-color: #AEFF88;
+            }
+            80% {
+                --gradient-color: #1CE4FF;
+            }
         }
-        .onChange(of: mixViewModel.currSong) { _ in
-            updateBackgroundImage()
+
+        @property --gradient-color {
+            syntax: '<color>';
+            inherits: false;
+            initial-value: #FB4BBF;
         }
-    }
+
+        .container {
+            text-align: center;
+            z-index: 2;
+        }
+
+        .title {
+            font-size: 14rem;
+            font-weight: 900;
+            font-stretch: expanded;
+            margin-bottom: 3rem;
+            letter-spacing: -0.02em;
+            position: relative;
+            animation: glitch 2s infinite;
+        }
+
+        .title::before,
+        .title::after {
+            content: 'On Aux';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .title::before {
+            animation: glitch-1 0.5s infinite;
+            color: #ff0040;
+            z-index: -1;
+        }
+
+        .title::after {
+            animation: glitch-2 0.5s infinite;
+            color: #00ffff;
+            z-index: -2;
+        }
+
+        @keyframes glitch {
+            0%, 74%, 100% {
+                transform: translate(0);
+            }
+            75% {
+                transform: translate(-4px, 4px);
+            }
+            76% {
+                transform: translate(5px, -3px);
+            }
+            77% {
+                transform: translate(-3px, 6px);
+            }
+            78% {
+                transform: translate(6px, -2px);
+            }
+            79% {
+                transform: translate(-5px, 3px);
+            }
+            80% {
+                transform: translate(4px, -5px);
+            }
+        }
+
+        @keyframes glitch-1 {
+            0%, 74%, 100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+            75% {
+                transform: translate(5px, -4px);
+                opacity: 0.7;
+            }
+            76% {
+                transform: translate(-4px, 5px);
+                opacity: 0.6;
+            }
+            77% {
+                transform: translate(3px, -3px);
+                opacity: 0.8;
+            }
+            78% {
+                transform: translate(-6px, 4px);
+                opacity: 0.5;
+            }
+            79% {
+                transform: translate(7px, -6px);
+                opacity: 0.7;
+            }
+            80% {
+                transform: translate(-5px, 7px);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes glitch-2 {
+            0%, 74%, 100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+            75% {
+                transform: translate(-3px, 3px);
+                opacity: 0.8;
+            }
+            76% {
+                transform: translate(4px, -4px);
+                opacity: 0.7;
+            }
+            77% {
+                transform: translate(-6px, 5px);
+                opacity: 0.6;
+            }
+            78% {
+                transform: translate(5px, -5px);
+                opacity: 0.7;
+            }
+            79% {
+                transform: translate(-4px, 7px);
+                opacity: 0.5;
+            }
+            80% {
+                transform: translate(6px, -7px);
+                opacity: 0.6;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-weight: 900;
+            font-stretch: expanded;
+        }
+
+        .join-form {
+            display: flex;
+            gap: 0;
+            justify-content: center;
+            align-items: stretch;
+            margin-bottom: 4rem;
+            background: rgba(255,255,255,0.07);
+            border-radius: 30px;
+            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08);
+            padding: 6px;
+            width: 100%;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .join-input {
+            padding: 0 24px;
+            border-radius: 25px 0 0 25px;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font-size: 1.1rem;
+            outline: none;
+            width: 320px;
+            min-width: 0;
+            flex: 1 1 320px;
+            font-family: "Mona Sans", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 48px;
+            box-sizing: border-box;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .join-input::placeholder {
+            color: #fff;
+            opacity: 0.7;
+            font-weight: 400;
+        }
+        .join-input:focus {
+            background: rgba(255,255,255,0.12);
+            box-shadow: 0 0 0 2px #FB4BBF;
+        }
+        .join-button {
+            border-radius: 0 25px 25px 0;
+            border: none;
+            background: #fff;
+            color: #222;
+            padding: 0 32px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            font-weight: 900;
+            font-stretch: expanded;
+            height: 48px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px 0 rgba(251,75,191,0.08);
+            display: flex;
+            align-items: center;
+        }
+        .join-button:hover {
+            background: #f3f3f3;
+            color: #FB4BBF;
+            transform: translateY(-2px) scale(1.03);
+        }
+        @media (max-width: 600px) {
+            .join-form {
+                flex-direction: column;
+                padding: 4px;
+                max-width: 98vw;
+            }
+            .join-input, .join-button {
+                border-radius: 25px !important;
+                width: 100%;
+                min-width: 0;
+                margin: 0 0 8px 0;
+                height: 44px;
+                font-size: 1rem;
+            }
+            .join-button {
+                margin-bottom: 0;
+            }
+        }
+
+        .description {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            font-weight: 900;
+            font-stretch: expanded;
+            max-width: 800px;
+            line-height: 1.4;
+        }
+
+        .features {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 900;
+            font-stretch: expanded;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Additional gradient overlay for depth */
+        /* .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, 
+                rgba(233, 30, 99, 0.3) 0%, 
+                transparent 50%),
+                       radial-gradient(circle at 80% 20%, 
+                rgba(156, 39, 176, 0.3) 0%, 
+                transparent 50%);
+            background-size: 100% 100%;
+            z-index: 1;
+            animation: pulseOverlay 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+            transform-origin: center center;
+        } */
+
+        @keyframes pulseOverlay {
+            0%, 100% {
+                background-size: 100% 100%;
+                background-position: center center;
+                opacity: 1;
+            }
+            50% {
+                background-size: 150% 150%;
+                background-position: center center;
+                opacity: 0.7;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 4rem;
+            }
+            
+            .description {
+                font-size: 1.2rem;
+                padding: 0 2rem;
+            }
+            
+            .features {
+                gap: 1rem;
+            }
+            
+            .feature {
+                width: 120px;
+                height: 120px;
+                font-size: 1rem;
+            }
+        }
+
+        .top-image {
+            display: block;
+            margin: 0 auto;
+            margin-top: 24px;
+            width: 180px;
+            height: auto;
+            z-index: 10;
+        }
+
+        .sway-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+            animation: sway 5s ease-in-out infinite alternate;
+            transform-origin: top center;
+        }
+
+        @keyframes sway {
+            0% {
+                transform: rotate(-12deg);
+            }
+            50% {
+                transform: rotate(12deg);
+            }
+            100% {
+                transform: rotate(-12deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="bg-audio" src="https://d2kcekwe0uugez.cloudfront.net/website.mp3" autoplay loop style="visibility:hidden; width:0; height:0;"></audio>
+    <div class="sway-container">
+        <img src="image%2040.png" alt="Disco Ball" class="top-image">
+    </div>
+    <div class="gradient-overlay"></div>
     
-    func updateBackgroundImage() {
-        let colorMap = mixViewModel.getColorFromTrack(song: mixViewModel.getCurrentSong())
+    <div class="container">
+        <h1 class="title">On Aux</h1>
         
-        if colorMap.color == Color("Pink Color") {
-            backgroundImage = "Pink background"
-        } else if colorMap.color == Color("Cyan Color") {
-            backgroundImage = "Cyan background"
-        } else if colorMap.color == Color("Orange Color") {
-            backgroundImage = "Orange background"
-        } else if colorMap.color == Color("Green Color") {
-            backgroundImage = "Green background"
-        } else if colorMap.color == Color("Yellow Color") {
-            backgroundImage = "Yellow background"
+        <!-- <p class="subtitle">join private preview</p> -->
+        <form class="join-form" id="joinForm">
+            <input type="text" class="join-input" id="joinInput" placeholder="Email or phone number" required>
+            <button type="submit" class="join-button">Join Preview</button>
+        </form>
+        <div id="joinError" style="color:#FF4B4B; text-align:center; font-size:1rem; min-height:1.5em; margin-bottom:2rem;"></div>
+        
+        <p class="description">On Aux helps you DJ the music at your party so you can focus on fun</p> 
+        
+        <div class="features">
+            <div class="feature">curate</div>
+            <div class="feature">order</div>
+            <div class="feature">transition</div>
+            <div class="feature">adapt</div>
+        </div>
+    </div>
+    <script>
+    // Email regex (simple)
+    function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    // Phone regex (US/international, simple)
+    function isValidPhone(phone) {
+        return /^\+?\d{7,15}$/.test(phone.replace(/[^\d+]/g, ''));
+    }
+
+    document.getElementById('joinForm').addEventListener('submit', function(e) {
+        const input = document.getElementById('joinInput').value.trim();
+        const errorDiv = document.getElementById('joinError');
+        if (!isValidEmail(input) && !isValidPhone(input)) {
+            e.preventDefault();
+            /* errorDiv.textContent = 'Please enter a valid email address or phone number.'; */
         } else {
-            backgroundImage = "Cyan background" // Default
+            /* errorDiv.textContent = ''; */
         }
-    }
-}
+    });
 
-private struct PlaybackBackground: View {
-    @EnvironmentObject var mixViewModel: MixViewModel
-    
-    @State private var currColor: String = "Cyan Color"
-    
-    var body: some View {
-        ZStack {
-            Color("Background Color").ignoresSafeArea(.container)
-            GeometryReader { geometry in
-                ZStack {
-                    let radius = min(geometry.size.width, geometry.size.height) / 2
-                    let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 3)
-                    ForEach(0..<3, id:\.self) { index in
-                        if index == 0 {
-                            generateCircleView(at: index, color: Color("\(currColor)"), center: center)
-                        } else {
-                            generateCircleView(at: index, color: Color("\(currColor) \(index)"), center: center)
-                        }
-                    }
-                }
+    // Play audio on first user interaction
+    (function() {
+        const audio = document.getElementById('bg-audio');
+        function playAudioOnce() {
+            if (audio.paused) {
+                audio.play().catch(()=>{});
             }
-            
+            window.removeEventListener('click', playAudioOnce);
+            window.removeEventListener('keydown', playAudioOnce);
+            window.removeEventListener('touchstart', playAudioOnce);
         }
-        .onAppear {
-            updateCurrColor()
-        }
-        .onChange (of: mixViewModel.currSong) { _ in
-            updateCurrColor()
-        }
-    }
-    
-    func updateCurrColor() {
-        let colorMap = mixViewModel.getColorFromTrack(song: mixViewModel.getCurrentSong())
-        
-        if colorMap.color == Color("Pink Color") {
-            currColor = "Pink Color"
-        } else if colorMap.color == Color("Cyan Color") {
-            currColor = "Cyan Color"
-        } else if colorMap.color == Color("Orange Color") {
-            currColor = "Orange Color"
-        } else if colorMap.color == Color("Green Color") {
-            currColor = "Green Color"
-        } else if colorMap.color == Color("Yellow Color") {
-            currColor = "Yellow Color"
-        } else {
-            currColor = "Cyan Color" // Default
-        }
-
-    }
-    
-}
-
-private func generateCircleView(at index: Int, color: Color, center: CGPoint) -> some View {
-    let blurRadius: CGFloat = 250
-//    let blurRadius: CGFloat = 0
-    let opacity: CGFloat = 1
-    let radius: CGFloat = 300
-    
-    let xPosI = CGFloat(index) * 2 * .pi / 3
-    let yPosI = CGFloat(index) * 2 * .pi / 3
-    let xPos = radius * cos(xPosI)
-    let yPos = radius * sin(yPosI)
-    let factor: CGFloat  =  0.33
-    let finalRadius: CGFloat = (factor * radius) + radius
-   
-    // Beat = 120 BPM = 0.5 seconds per beat
-    // Use slightly different timing for each circle
-    let beatDuration = 0.5 + (Double(index) * 0.05)
-    
-    return PlaybackCircleView(
-        xPos: xPos,
-        yPos: yPos,
-        fill: color,
-        cicleRadius: finalRadius,
-        center: center,
-        blurRadius: blurRadius,
-        opacity: opacity,
-        rotationSpeed: 5.0  / 4,
-        pulseSpeed: beatDuration,
-        orbitSpeed: 2,
-        orbitDirection: index % 2 == 0 ? 1 : -1,
-        startAngle: xPosI
-    )
-}
-
-private struct PlaybackCircleView: View {
-    let xPos: CGFloat
-    let yPos: CGFloat
-    let fill: Color
-    let cicleRadius: CGFloat
-    let center: CGPoint
-    let blurRadius: CGFloat
-    let opacity: CGFloat
-    let rotationSpeed: Double
-    let pulseSpeed: Double
-    let orbitSpeed: Double
-    let orbitDirection: Double
-    let startAngle: CGFloat
-    @State private var scale: CGFloat = 0
-    @State private var rotation: Double = 0
-    @State private var orbitAngle: Double = 0
-    @State private var pulseScale: CGFloat = 1.0
-    @State private var isAnimating: Bool = true
-    @EnvironmentObject var mixViewModel: MixViewModel
-
-    var body: some View {
-        let radius = sqrt(xPos * xPos + yPos * yPos)
-        let currentX = radius * cos(CGFloat(orbitAngle) + startAngle)
-        let currentY = radius * sin(CGFloat(orbitAngle) + startAngle)
-        
-        Circle()
-            .fill(fill)
-            .frame(width: cicleRadius, height: cicleRadius)
-            .offset(x: currentX, y: currentY)
-            .rotationEffect(.degrees(rotation))
-            .position(center)
-            .blur(radius: blurRadius)
-            .opacity(opacity)
-            .scaleEffect(scale * pulseScale)
-            .onAppear {
-                withAnimation(.spring()) {
-                    scale = 1
-                }
-                
-                if mixViewModel.isPlaying {
-                    startAnimations()
-                }
-            }
-            .onChange(of: mixViewModel.isPlaying) { isPlaying in
-                self.isAnimating = isPlaying
-                
-                if isPlaying {
-                    startAnimations()
-                } else {
-                    stopAnimations()
-                }
-            }
-    }
-    
-    private func startAnimations() {
-        // Cancel any existing animations
-        withAnimation(nil) {
-            // Reset to initial position for a clean start
-            rotation = 0
-            orbitAngle = 0
-            pulseScale = 1.0
-        }
-        
-        // Start animations after a short delay to ensure clean transition
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            // Start the dancing animations with more dramatic pulsing
-            // Much more dramatic pulsing - from 0.5 to 1.3 (80% size change)
-            withAnimation(Animation.easeInOut(duration: pulseSpeed).repeatForever(autoreverses: true)) {
-                pulseScale = 0.5
-            }
-            
-            withAnimation(Animation.linear(duration: rotationSpeed).repeatForever(autoreverses: false)) {
-                rotation = 360
-            }
-            
-            withAnimation(Animation.linear(duration: orbitSpeed).repeatForever(autoreverses: false)) {
-                orbitAngle = orbitDirection * 4 * .pi
-            }
-        }
-    }
-    
-    private func stopAnimations() {
-        // Remove all animations and return to default state
-        withAnimation(.easeOut(duration: 0.2)) {
-            // Stop at a neutral position
-            pulseScale = 1.0
-            rotation = 0
-            orbitAngle = 0
-            
-//            // Animation will be removed by SwiftUI when duration is nil
-//            withAnimation(nil) {
-//                // Not setting these ensures animations stop in place
-//            }
-        }
-    }
-}
-
-
-
-/*
- 
- struct BackgroundView: View {
-     @EnvironmentObject var mixViewModel: MixViewModel
-        
-     let blurRadius: CGFloat = 150
-     let opacity: CGFloat = 0.15
-     let circleRadius: CGFloat = 300
-
-     var body: some View {
-         GeometryReader { geometry in
-             ZStack {
-                 Color("Background Color").ignoresSafeArea(.container)
-                 let radius = min(geometry.size.width, geometry.size.height) / 2
-                 let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 1.5)
-                 let colorsCount = mixViewModel.getVibeColors().count
-                 ForEach(0..<colorsCount, id:\.self) { index in
-                     generateCircleView(at: index, radius: radius, center: center)
-                 }
-             }
-         }
-     }
-
-     private func generateCircleView(at index: Int, radius: CGFloat, center: CGPoint) -> some View {
-         let xPosI = CGFloat(index) * 2 * .pi / CGFloat(mixViewModel.getVibeColors().count)
-         let yPosI = CGFloat(index) * 2 * .pi / CGFloat(mixViewModel.getVibeColors().count)
-         let xPos = radius * cos(xPosI)
-         let yPos = radius * sin(yPosI)
-         let factor: CGFloat  =  CGFloat(mixViewModel.vibes[index].proportion ?? 0)
-         let finalRadius: CGFloat = (factor * circleRadius) + circleRadius
-         let fill: LinearGradient = mixViewModel.getVibeColors()[index].primaryGradient
-        
-         return CircleView(xPos: xPos, yPos: yPos, fill: fill, cicleRadius: finalRadius, center: center, blurRadius: blurRadius, opacity: opacity)
-     }
- }
-
-
- struct CircleView: View {
-     let xPos: CGFloat
-     let yPos: CGFloat
-     let fill: LinearGradient
-     let cicleRadius: CGFloat
-     let center: CGPoint
-     let blurRadius: CGFloat
-     let opacity: CGFloat
-     @State private var scale: CGFloat = 0
-
-     var body: some View {
-         Circle()
-             .fill(fill)
-             .frame(width: cicleRadius, height: cicleRadius)
-             .offset(x: xPos, y: yPos)
-             .position(center)
-             .blur(radius: blurRadius)
-             .opacity(opacity)
-             .scaleEffect(scale)
-             .onAppear {
-                 withAnimation(.spring()) {
-                     scale = 1
-                 }
-             }
-     }
- }
-
-
- struct BackgroundView_Previews: PreviewProvider {
-     static var previews: some View {
-         BackgroundView()
-     }
- }
-
-
-
- 
- */
-
-
-
-
-
-private struct MainView: View {
-    var body: some View {
-        VStack {
-//            PreviewVisView(color: false, showAllVibes: false )
-            CurrentStatusView()
-                .padding(.bottom, 50)
-            PlaybackCurrSongView()
-                .padding(20)
-//                .shadow(color: .black.opacity(0.2), radius: 10)
-//            AudioVisView(maxHeight: 30)
-////                .shadow(color: .white.opacity(0.3), radius: 4)
-////                .shadow(color: .black.opacity(0.2), radius: 10)
-//                .padding(.vertical, 10)
-            Spacer()
-        }
-    }
-}
-
-struct PlaybackView_Previews: PreviewProvider {
-    static var mixViewModel = MixViewModel()
-
-    static var previews: some View {
-        PlaybackView()
-            .environmentObject(mixViewModel)
-    }
-}
-
-/*
- 
- extension Font {
-     static let titleFont = Font.custom("MonaSansExpanded-Bold", size: 40)
-     static let bodyFont = Font.custom("MonaSans-SemiBold", size: 18)
-     static let subTitleFont = Font.custom("MonaSansExpanded-Bold", size: 25)
-     static let vibeTitleFont = Font.custom("MonaSans-SemiBoldItalic", size: 18)
-     static let captionFont = Font.custom("Courier", size: 14)
-     static let extraLargeTitleFont = Font.custom("MonaSansExpanded-Bold", size: 70)
- }
-
- 
- */
+        window.addEventListener('click', playAudioOnce);
+        window.addEventListener('keydown', playAudioOnce);
+        window.addEventListener('touchstart', playAudioOnce);
+    })();
+    </script>
+</body>
+</html>
