@@ -1,1 +1,394 @@
-down with spotify
+//
+//  PlaybackView.swift
+//  IntelliBeat
+//
+//  Created by Sachin Katyal on 7/1/23.
+//
+
+import SwiftUI
+import BottomSheet
+
+struct PlaybackView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var mixViewModel: MixViewModel
+    @State var bottomSheetPosition: BottomSheetPosition = .dynamicBottom
+    @State private var backgroundImage: String = "Cyan background"
+    
+    var body: some View {
+        ZStack {
+            PlaybackBackground()
+            // Background image
+            
+//            let backgroundColor = mixViewModel.getColorFromTrack(song: mixViewModel.getCurrentSong()).backgroundGradient
+             
+//            backgroundColor.ignoresSafeArea(.container)
+            
+            // Image(backgroundImage)
+            //     .resizable()
+            //     .aspectRatio(contentMode: .fill)
+            //     .ignoresSafeArea(.container)
+            
+            // Main content
+            MainView()
+                .bottomSheet(
+                    bottomSheetPosition: self.$bottomSheetPosition,
+                    switchablePositions: [.dynamicBottom, .dynamicTop],
+                    headerContent: { PlaybackHeaderView() }
+                ) {
+                    PlaybackSheetView()
+                }
+                .showDragIndicator(true)
+                .customBackground(
+         //            Color("Background Color")
+         //            .cornerRadius(25)
+                         BlurView(style: .systemThinMaterialDark )
+//                             .overlay(Color.blue.opacity(0.15).blendMode(.multiply))
+                             .cornerRadius(25)
+                             .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 0)
+                )
+                .foregroundColor(.white)
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+        }
+        .onAppear {
+            updateBackgroundImage()
+        }
+        .onChange(of: mixViewModel.currSong) { _ in
+            updateBackgroundImage()
+        }
+    }
+    
+    func updateBackgroundImage() {
+        let colorMap = mixViewModel.getColorFromTrack(song: mixViewModel.getCurrentSong())
+        
+        if colorMap.color == Color("Pink Color") {
+            backgroundImage = "Pink background"
+        } else if colorMap.color == Color("Cyan Color") {
+            backgroundImage = "Cyan background"
+        } else if colorMap.color == Color("Orange Color") {
+            backgroundImage = "Orange background"
+        } else if colorMap.color == Color("Green Color") {
+            backgroundImage = "Green background"
+        } else if colorMap.color == Color("Yellow Color") {
+            backgroundImage = "Yellow background"
+        } else {
+            backgroundImage = "Cyan background" // Default
+        }
+    }
+}
+
+private struct PlaybackBackground: View {
+    @EnvironmentObject var mixViewModel: MixViewModel
+    
+    @State private var currColor: String = "Cyan Color"
+    
+    var body: some View {
+        ZStack {
+            Color("Background Color").ignoresSafeArea(.container)
+            GeometryReader { geometry in
+                ZStack {
+                    let radius = min(geometry.size.width, geometry.size.height) / 2
+                    let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 3)
+                    ForEach(0..<3, id:\.self) { index in
+                        if index == 0 {
+                            generateCircleView(at: index, color: Color("\(currColor)"), center: center)
+                        } else {
+                            generateCircleView(at: index, color: Color("\(currColor) \(index)"), center: center)
+                        }
+                    }
+                }
+            }
+            
+        }
+        .onAppear {
+            updateCurrColor()
+        }
+        .onChange (of: mixViewModel.currSong) { _ in
+            updateCurrColor()
+        }
+    }
+    
+    func updateCurrColor() {
+        let colorMap = mixViewModel.getColorFromTrack(song: mixViewModel.getCurrentSong())
+        
+        if colorMap.color == Color("Pink Color") {
+            currColor = "Pink Color"
+        } else if colorMap.color == Color("Cyan Color") {
+            currColor = "Cyan Color"
+        } else if colorMap.color == Color("Orange Color") {
+            currColor = "Orange Color"
+        } else if colorMap.color == Color("Green Color") {
+            currColor = "Green Color"
+        } else if colorMap.color == Color("Yellow Color") {
+            currColor = "Yellow Color"
+        } else {
+            currColor = "Cyan Color" // Default
+        }
+
+    }
+    
+}
+
+private func generateCircleView(at index: Int, color: Color, center: CGPoint) -> some View {
+    let blurRadius: CGFloat = 250
+//    let blurRadius: CGFloat = 0
+    let opacity: CGFloat = 1
+    let radius: CGFloat = 300
+    
+    let xPosI = CGFloat(index) * 2 * .pi / 3
+    let yPosI = CGFloat(index) * 2 * .pi / 3
+    let xPos = radius * cos(xPosI)
+    let yPos = radius * sin(yPosI)
+    let factor: CGFloat  =  0.33
+    let finalRadius: CGFloat = (factor * radius) + radius
+   
+    // Beat = 120 BPM = 0.5 seconds per beat
+    // Use slightly different timing for each circle
+    let beatDuration = 0.5 + (Double(index) * 0.05)
+    
+    return PlaybackCircleView(
+        xPos: xPos,
+        yPos: yPos,
+        fill: color,
+        cicleRadius: finalRadius,
+        center: center,
+        blurRadius: blurRadius,
+        opacity: opacity,
+        rotationSpeed: 5.0  / 4,
+        pulseSpeed: beatDuration,
+        orbitSpeed: 2,
+        orbitDirection: index % 2 == 0 ? 1 : -1,
+        startAngle: xPosI
+    )
+}
+
+private struct PlaybackCircleView: View {
+    let xPos: CGFloat
+    let yPos: CGFloat
+    let fill: Color
+    let cicleRadius: CGFloat
+    let center: CGPoint
+    let blurRadius: CGFloat
+    let opacity: CGFloat
+    let rotationSpeed: Double
+    let pulseSpeed: Double
+    let orbitSpeed: Double
+    let orbitDirection: Double
+    let startAngle: CGFloat
+    @State private var scale: CGFloat = 0
+    @State private var rotation: Double = 0
+    @State private var orbitAngle: Double = 0
+    @State private var pulseScale: CGFloat = 1.0
+    @State private var isAnimating: Bool = true
+    @EnvironmentObject var mixViewModel: MixViewModel
+
+    var body: some View {
+        let radius = sqrt(xPos * xPos + yPos * yPos)
+        let currentX = radius * cos(CGFloat(orbitAngle) + startAngle)
+        let currentY = radius * sin(CGFloat(orbitAngle) + startAngle)
+        
+        Circle()
+            .fill(fill)
+            .frame(width: cicleRadius, height: cicleRadius)
+            .offset(x: currentX, y: currentY)
+            .rotationEffect(.degrees(rotation))
+            .position(center)
+            .blur(radius: blurRadius)
+            .opacity(opacity)
+            .scaleEffect(scale * pulseScale)
+            .onAppear {
+                withAnimation(.spring()) {
+                    scale = 1
+                }
+                
+                if mixViewModel.isPlaying {
+                    startAnimations()
+                }
+            }
+            .onChange(of: mixViewModel.isPlaying) { isPlaying in
+                self.isAnimating = isPlaying
+                
+                if isPlaying {
+                    startAnimations()
+                } else {
+                    stopAnimations()
+                }
+            }
+    }
+    
+    private func startAnimations() {
+        // Cancel any existing animations
+        withAnimation(nil) {
+            // Reset to initial position for a clean start
+            rotation = 0
+            orbitAngle = 0
+            pulseScale = 1.0
+        }
+        
+        // Start animations after a short delay to ensure clean transition
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            // Start the dancing animations with more dramatic pulsing
+            // Much more dramatic pulsing - from 0.5 to 1.3 (80% size change)
+            withAnimation(Animation.easeInOut(duration: pulseSpeed).repeatForever(autoreverses: true)) {
+                pulseScale = 0.5
+            }
+            
+            withAnimation(Animation.linear(duration: rotationSpeed).repeatForever(autoreverses: false)) {
+                rotation = 360
+            }
+            
+            withAnimation(Animation.linear(duration: orbitSpeed).repeatForever(autoreverses: false)) {
+                orbitAngle = orbitDirection * 4 * .pi
+            }
+        }
+    }
+    
+    private func stopAnimations() {
+        // Remove all animations and return to default state
+        withAnimation(.easeOut(duration: 0.2)) {
+            // Stop at a neutral position
+            pulseScale = 1.0
+            rotation = 0
+            orbitAngle = 0
+            
+//            // Animation will be removed by SwiftUI when duration is nil
+//            withAnimation(nil) {
+//                // Not setting these ensures animations stop in place
+//            }
+        }
+    }
+}
+
+
+
+/*
+ 
+ struct BackgroundView: View {
+     @EnvironmentObject var mixViewModel: MixViewModel
+        
+     let blurRadius: CGFloat = 150
+     let opacity: CGFloat = 0.15
+     let circleRadius: CGFloat = 300
+
+     var body: some View {
+         GeometryReader { geometry in
+             ZStack {
+                 Color("Background Color").ignoresSafeArea(.container)
+                 let radius = min(geometry.size.width, geometry.size.height) / 2
+                 let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 1.5)
+                 let colorsCount = mixViewModel.getVibeColors().count
+                 ForEach(0..<colorsCount, id:\.self) { index in
+                     generateCircleView(at: index, radius: radius, center: center)
+                 }
+             }
+         }
+     }
+
+     private func generateCircleView(at index: Int, radius: CGFloat, center: CGPoint) -> some View {
+         let xPosI = CGFloat(index) * 2 * .pi / CGFloat(mixViewModel.getVibeColors().count)
+         let yPosI = CGFloat(index) * 2 * .pi / CGFloat(mixViewModel.getVibeColors().count)
+         let xPos = radius * cos(xPosI)
+         let yPos = radius * sin(yPosI)
+         let factor: CGFloat  =  CGFloat(mixViewModel.vibes[index].proportion ?? 0)
+         let finalRadius: CGFloat = (factor * circleRadius) + circleRadius
+         let fill: LinearGradient = mixViewModel.getVibeColors()[index].primaryGradient
+        
+         return CircleView(xPos: xPos, yPos: yPos, fill: fill, cicleRadius: finalRadius, center: center, blurRadius: blurRadius, opacity: opacity)
+     }
+ }
+
+
+ struct CircleView: View {
+     let xPos: CGFloat
+     let yPos: CGFloat
+     let fill: LinearGradient
+     let cicleRadius: CGFloat
+     let center: CGPoint
+     let blurRadius: CGFloat
+     let opacity: CGFloat
+     @State private var scale: CGFloat = 0
+
+     var body: some View {
+         Circle()
+             .fill(fill)
+             .frame(width: cicleRadius, height: cicleRadius)
+             .offset(x: xPos, y: yPos)
+             .position(center)
+             .blur(radius: blurRadius)
+             .opacity(opacity)
+             .scaleEffect(scale)
+             .onAppear {
+                 withAnimation(.spring()) {
+                     scale = 1
+                 }
+             }
+     }
+ }
+
+
+ struct BackgroundView_Previews: PreviewProvider {
+     static var previews: some View {
+         BackgroundView()
+     }
+ }
+
+
+
+ 
+ */
+
+
+
+
+
+private struct MainView: View {
+    var body: some View {
+        VStack {
+//            PreviewVisView(color: false, showAllVibes: false )
+            CurrentStatusView()
+                .padding(.bottom, 50)
+            PlaybackCurrSongView()
+                .padding(20)
+//                .shadow(color: .black.opacity(0.2), radius: 10)
+//            AudioVisView(maxHeight: 30)
+////                .shadow(color: .white.opacity(0.3), radius: 4)
+////                .shadow(color: .black.opacity(0.2), radius: 10)
+//                .padding(.vertical, 10)
+            Spacer()
+        }
+    }
+}
+
+struct PlaybackView_Previews: PreviewProvider {
+    static var mixViewModel = MixViewModel()
+
+    static var previews: some View {
+        PlaybackView()
+            .environmentObject(mixViewModel)
+    }
+}
+
+/*
+ 
+ extension Font {
+     static let titleFont = Font.custom("MonaSansExpanded-Bold", size: 40)
+     static let bodyFont = Font.custom("MonaSans-SemiBold", size: 18)
+     static let subTitleFont = Font.custom("MonaSansExpanded-Bold", size: 25)
+     static let vibeTitleFont = Font.custom("MonaSans-SemiBoldItalic", size: 18)
+     static let captionFont = Font.custom("Courier", size: 14)
+     static let extraLargeTitleFont = Font.custom("MonaSansExpanded-Bold", size: 70)
+ }
+
+ 
+ */
