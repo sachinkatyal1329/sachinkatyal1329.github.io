@@ -18,10 +18,7 @@
             height: 100vh;
             font-family: "Mona Sans Wide Black", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-weight: 900;
-            background: radial-gradient(ellipse at center, 
-                var(--gradient-color) 0%, 
-                #1a1a2e 75%,
-                #1a1a2e 100%);
+            background: rgb(15, 15, 32);
             background-size: 110% 110%;
             display: flex;
             flex-direction: column;
@@ -34,7 +31,7 @@
             transform-origin: center center;
             --gradient-color: #FB4BBF;
         }
-
+/* 
         @keyframes pulseGradient {
             0%, 100% {
                 background-size: 110% 110%;
@@ -44,9 +41,9 @@
                 background-size: 160% 160%;
                 background-position: center center;
             }
-        }
+        } */
 
-        @keyframes cycleColors {
+        /* @keyframes cycleColors {
             0%, 100% {
                 --gradient-color: #FB4BBF;
             }
@@ -62,7 +59,7 @@
             80% {
                 --gradient-color: #1CE4FF;
             }
-        }
+        } */
 
         @property --gradient-color {
             syntax: '<color>';
@@ -76,247 +73,25 @@
         }
 
         .title {
-            font-size: 14rem;
+            font-size: 8rem;
             font-weight: 900;
             font-stretch: expanded;
-            margin-bottom: 3rem;
             letter-spacing: -0.02em;
             position: relative;
-            animation: glitch 2s infinite;
+            /* animation: glitch 2s infinite; */
         }
 
-        .title::before,
-        .title::after {
-            content: 'On Aux';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
 
-        .title::before {
-            animation: glitch-1 0.5s infinite;
-            color: #ff0040;
-            z-index: -1;
-        }
-
-        .title::after {
-            animation: glitch-2 0.5s infinite;
-            color: #00ffff;
-            z-index: -2;
-        }
-
-        @keyframes glitch {
-            0%, 74%, 100% {
-                transform: translate(0);
-            }
-            75% {
-                transform: translate(-4px, 4px);
-            }
-            76% {
-                transform: translate(5px, -3px);
-            }
-            77% {
-                transform: translate(-3px, 6px);
-            }
-            78% {
-                transform: translate(6px, -2px);
-            }
-            79% {
-                transform: translate(-5px, 3px);
-            }
-            80% {
-                transform: translate(4px, -5px);
-            }
-        }
-
-        @keyframes glitch-1 {
-            0%, 74%, 100% {
-                transform: translate(0);
-                opacity: 1;
-            }
-            75% {
-                transform: translate(5px, -4px);
-                opacity: 0.7;
-            }
-            76% {
-                transform: translate(-4px, 5px);
-                opacity: 0.6;
-            }
-            77% {
-                transform: translate(3px, -3px);
-                opacity: 0.8;
-            }
-            78% {
-                transform: translate(-6px, 4px);
-                opacity: 0.5;
-            }
-            79% {
-                transform: translate(7px, -6px);
-                opacity: 0.7;
-            }
-            80% {
-                transform: translate(-5px, 7px);
-                opacity: 0.6;
-            }
-        }
-
-        @keyframes glitch-2 {
-            0%, 74%, 100% {
-                transform: translate(0);
-                opacity: 1;
-            }
-            75% {
-                transform: translate(-3px, 3px);
-                opacity: 0.8;
-            }
-            76% {
-                transform: translate(4px, -4px);
-                opacity: 0.7;
-            }
-            77% {
-                transform: translate(-6px, 5px);
-                opacity: 0.6;
-            }
-            78% {
-                transform: translate(5px, -5px);
-                opacity: 0.7;
-            }
-            79% {
-                transform: translate(-4px, 7px);
-                opacity: 0.5;
-            }
-            80% {
-                transform: translate(6px, -7px);
-                opacity: 0.6;
-            }
-        }
 
         .subtitle {
             font-size: 1.2rem;
-            margin-bottom: 2rem;
             opacity: 0.9;
             font-weight: 900;
             font-stretch: expanded;
         }
 
-        .join-form {
-            display: flex;
-            gap: 0;
-            justify-content: center;
-            align-items: stretch;
-            margin-bottom: 4rem;
-            background: rgba(255,255,255,0.07);
-            border-radius: 30px;
-            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08);
-            padding: 6px;
-            width: 100%;
-            max-width: 480px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .join-input {
-            padding: 0 24px;
-            border-radius: 25px 0 0 25px;
-            border: none;
-            background: transparent;
-            color: #fff;
-            font-size: 1.1rem;
-            outline: none;
-            width: 320px;
-            min-width: 0;
-            flex: 1 1 320px;
-            font-family: "Mona Sans", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            height: 48px;
-            box-sizing: border-box;
-            transition: background 0.2s, box-shadow 0.2s;
-        }
-        .join-input::placeholder {
-            color: #fff;
-            opacity: 0.7;
-            font-weight: 400;
-        }
-        .join-input:focus {
-            background: rgba(255,255,255,0.12);
-            box-shadow: 0 0 0 2px #FB4BBF;
-        }
-        .join-button {
-            border-radius: 0 25px 25px 0;
-            border: none;
-            background: #fff;
-            color: #222;
-            padding: 0 32px;
-            font-size: 1.1rem;
-            font-family: inherit;
-            font-weight: 900;
-            font-stretch: expanded;
-            height: 48px;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s, transform 0.2s;
-            box-shadow: 0 2px 8px 0 rgba(251,75,191,0.08);
-            display: flex;
-            align-items: center;
-        }
-        .join-button:hover {
-            background: #f3f3f3;
-            color: #FB4BBF;
-            transform: translateY(-2px) scale(1.03);
-        }
-        @media (max-width: 600px) {
-            .join-form {
-                flex-direction: column;
-                padding: 4px;
-                max-width: 98vw;
-            }
-            .join-input, .join-button {
-                border-radius: 25px !important;
-                width: 100%;
-                min-width: 0;
-                margin: 0 0 8px 0;
-                height: 44px;
-                font-size: 1rem;
-            }
-            .join-button {
-                margin-bottom: 0;
-            }
-        }
-
         .description {
             font-size: 1.5rem;
-            margin-bottom: 3rem;
-            font-weight: 900;
-            font-stretch: expanded;
-            max-width: 800px;
-            line-height: 1.4;
-        }
-
-        .features {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .feature {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2rem;
-            border-radius: 20px;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            font-weight: 900;
-            font-stretch: expanded;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .feature:hover {
-            transform: translateY(-5px);
         }
 
         /* Additional gradient overlay for depth */
@@ -338,39 +113,7 @@
             transform-origin: center center;
         } */
 
-        @keyframes pulseOverlay {
-            0%, 100% {
-                background-size: 100% 100%;
-                background-position: center center;
-                opacity: 1;
-            }
-            50% {
-                background-size: 150% 150%;
-                background-position: center center;
-                opacity: 0.7;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .title {
-                font-size: 4rem;
-            }
-            
-            .description {
-                font-size: 1.2rem;
-                padding: 0 2rem;
-            }
-            
-            .features {
-                gap: 1rem;
-            }
-            
-            .feature {
-                width: 120px;
-                height: 120px;
-                font-size: 1rem;
-            }
-        }
+       
 
         .top-image {
             display: block;
@@ -404,67 +147,14 @@
     </style>
 </head>
 <body>
-    <audio id="bg-audio" src="https://d2kcekwe0uugez.cloudfront.net/website.mp3" autoplay loop style="visibility:hidden; width:0; height:0;"></audio>
     <div class="sway-container">
         <img src="image%2040.png" alt="Disco Ball" class="top-image">
     </div>
-    <div class="gradient-overlay"></div>
     
     <div class="container">
-        <h1 class="title">On Aux</h1>
-        
-        <!-- <p class="subtitle">join private preview</p> -->
-        <form class="join-form" id="joinForm">
-            <input type="text" class="join-input" id="joinInput" placeholder="Email or phone number" required>
-            <button type="submit" class="join-button">Join Preview</button>
-        </form>
-        <div id="joinError" style="color:#FF4B4B; text-align:center; font-size:1rem; min-height:1.5em; margin-bottom:2rem;"></div>
-        
-        <p class="description">On Aux helps you DJ the music at your party so you can focus on fun</p> 
-        
-        <div class="features">
-            <div class="feature">curate</div>
-            <div class="feature">order</div>
-            <div class="feature">transition</div>
-            <div class="feature">adapt</div>
-        </div>
+        <h1 class="title">OnAux</h1>
+        <p class="description">coming soon</p> 
+    
     </div>
-    <script>
-    // Email regex (simple)
-    function isValidEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-    // Phone regex (US/international, simple)
-    function isValidPhone(phone) {
-        return /^\+?\d{7,15}$/.test(phone.replace(/[^\d+]/g, ''));
-    }
-
-    document.getElementById('joinForm').addEventListener('submit', function(e) {
-        const input = document.getElementById('joinInput').value.trim();
-        const errorDiv = document.getElementById('joinError');
-        if (!isValidEmail(input) && !isValidPhone(input)) {
-            e.preventDefault();
-            /* errorDiv.textContent = 'Please enter a valid email address or phone number.'; */
-        } else {
-            /* errorDiv.textContent = ''; */
-        }
-    });
-
-    // Play audio on first user interaction
-    (function() {
-        const audio = document.getElementById('bg-audio');
-        function playAudioOnce() {
-            if (audio.paused) {
-                audio.play().catch(()=>{});
-            }
-            window.removeEventListener('click', playAudioOnce);
-            window.removeEventListener('keydown', playAudioOnce);
-            window.removeEventListener('touchstart', playAudioOnce);
-        }
-        window.addEventListener('click', playAudioOnce);
-        window.addEventListener('keydown', playAudioOnce);
-        window.addEventListener('touchstart', playAudioOnce);
-    })();
-    </script>
 </body>
 </html>
