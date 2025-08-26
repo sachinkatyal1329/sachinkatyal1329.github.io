@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnAux</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@200..900&family=Mona+Sans+Wide+Black&family=Mona+Sans+Medium+Wide:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            background-color: hsla(240,36%,9%,1);
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Mona Sans Wide Black", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 900;
+            position: relative;
+            color: white;
+            transform-origin: center center;
+            --gradient-color: #FB4BBF;
+        }
+
+        
+/* 
+        @keyframes pulseGradient {
+            0%, 100% {
+                background-size: 110% 110%;
+                background-position: center center;
+            }
+            50% {
+                background-size: 160% 160%;
+                background-position: center center;
+            }
+        } */
+
+        /* @keyframes cycleColors {
+            0%, 100% {
+                --gradient-color: #FB4BBF;
+            }
+            20% {
+                --gradient-color: #FF9536;
+            }
+            40% {
+                --gradient-color: #FAFF00;
+            }
+            60% {
+                --gradient-color: #AEFF88;
+            }
+            80% {
+                --gradient-color: #1CE4FF;
+            }
+        } */
+
+        @property --gradient-color {
+            syntax: '<color>';
+            inherits: false;
+            initial-value: #FB4BBF;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-main { display: flex; flex-direction: column; align-items: center; }
+        .hero-aside { position: absolute; left: calc(50% + 360px); top: 50%; transform: translateY(-50%); pointer-events: none; }
+        .hero-phone { width: clamp(160px, 20vw, 280px); height: auto; display: block; }
+
+        /* Layout primitives */
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 0rem;
+        }
+
+        @media screen and (max-width: 900px) {
+            .hero-aside { display: none; }
+        }
+
+        /* Slightly reduce phone size on medium widths to avoid overlap */
+        @media screen and (max-width: 1200px) {
+            .hero-phone { width: clamp(150px, 18vw, 240px); }
+            .hero-aside { left: calc(50% + 320px); }
+        }
+
+        .section {
+            width: 100%;
+            padding: 6rem 1.25rem;
+        }
+
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Hero section background and centering */
+        #hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: hsla(240,36%,9%,1);
+            background-image:
+                radial-gradient(at 84% 2%, hsla(328,74%,51%,1) 0px, transparent 50%),
+                radial-gradient(at 49% 0%, hsla(61,74%,51%,1) 0px, transparent 50%),
+                radial-gradient(at 99% 29%, hsla(96,74%,51%,1) 0px, transparent 50%),
+                radial-gradient(at 0% 40%, hsla(26,74%,51%,1) 0px, transparent 50%),
+                radial-gradient(at 4% 4%, hsla(172,74%,51%,1) 0px, transparent 50%);
+        }
+
+        /* Make hero wrapper fill height so footnotes can sit at bottom */
+        #hero .wrapper {
+            min-height: calc(100vh - 10rem); /* 12rem = section vertical padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Center the main hero copy while allowing the footnotes to push down */
+        #hero .container {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        /* Footnotes stay at the bottom of the hero section */
+        .hero-footnotes {
+            margin-top: auto;
+        }
+
+        .title {
+            font-size: 8rem;
+            font-weight: 900;
+            font-stretch: expanded;
+            letter-spacing: -0.02em;
+            position: relative;
+            /* animation: glitch 2s infinite; */
+        }
+
+        /* Mobile responsive styles */
+        @media screen and (max-width: 768px) {
+            .title {
+                font-size: 4.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .description {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .title {
+                font-size: 3rem;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+        }
+
+
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 500;
+            font-stretch: expanded;
+        }
+
+        /* How to section typography */
+        .howto { text-align: center; }
+        .howto-head { text-align: center; transform: translateX(-300px); }
+        .howto-title {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            font-stretch: expanded;
+        }
+        .howto-subtext {
+            margin-top: 0.6rem;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
+            font-size: clamp(1rem, 2.3vw, 1.25rem);
+            color: rgba(255,255,255,0.9);
+            font-stretch: expanded;
+            transform: translateX(-50px);
+        }
+
+        /* Vibes section heading uses same typography, shifted right */
+        .vibes { text-align: center; }
+        .vibes-head { text-align: center; transform: translateX(300px); }
+        .vibes-subtext { transform: translateX(50px); }
+
+        /* Center section headings on narrower viewports */
+        @media screen and (max-width: 1024px) {
+            .howto-head { 
+                transform: translateX(0); 
+            }
+            .howto-subtext {
+                transform: translateX(0);
+            }
+            .vibes-head { 
+                transform: translateX(0); 
+            }
+            .vibes-subtext { 
+                transform: translateX(0); 
+            }
+        }
+
+        /* FAQ responsive styles for mobile */
+        @media screen and (max-width: 768px) {
+            .faq-content {
+                margin-top: 2rem;
+                max-width: 100%;
+                padding: 0 1rem;
+            }
+            
+            .faq-question {
+                padding: 1.2rem 0;
+                font-size: clamp(1rem, 4vw, 1.2rem);
+            }
+            
+            .faq-answer {
+                font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+                line-height: 1.5;
+            }
+            
+            .faq-toggle {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .faq-content {
+                padding: 0 0.5rem;
+            }
+            
+            .faq-question {
+                padding: 1rem 0;
+            }
+            
+            .faq-item.active .faq-answer {
+                padding-bottom: 1rem;
+            }
+        }
+
+        /* Vibes horizontal scroll */
+        .vibes-scroll {
+            margin-top: 2.25rem;
+            overflow: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            padding: 1rem 0;
+            width: 100%;
+            /* Edge fade */
+            -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1) 8%, rgba(0,0,0,1) 92%, rgba(0,0,0,0));
+            mask-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1) 8%, rgba(0,0,0,1) 92%, rgba(0,0,0,0));
+        }
+        .vibes-scroll::-webkit-scrollbar { display: none; }
+        .vibes-track {
+            display: inline-flex;
+            gap: clamp(16px, 2vw, 32px);
+            align-items: center;
+            animation: vibesMarquee 30s linear infinite;
+            will-change: transform;
+        }
+        .vibe-circle {
+            width: clamp(180px, 20vw, 280px);
+            height: clamp(180px, 20vw, 280px);
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 15px 40px rgba(0,0,0,0.35);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        .vibes-track .vibe-circle:nth-child(1), .vibes-track .vibe-circle:nth-child(8) { background-image: url('OnAux-dance-party.png'); }
+        .vibes-track .vibe-circle:nth-child(2), .vibes-track .vibe-circle:nth-child(9) { background-image: url('OnAux-summer-darty.png'); }
+        .vibes-track .vibe-circle:nth-child(3), .vibes-track .vibe-circle:nth-child(10) { background-image: url('OnAux-tailgate.png'); }
+        .vibes-track .vibe-circle:nth-child(4), .vibes-track .vibe-circle:nth-child(11) { background-image: url('OnAux-bbq.png'); }
+        .vibes-track .vibe-circle:nth-child(5), .vibes-track .vibe-circle:nth-child(12) { background-image: url('OnAux-birthday-party.png'); }
+        .vibes-track .vibe-circle:nth-child(6), .vibes-track .vibe-circle:nth-child(13) { background-image: url('OnAux-girls-night-out.png'); }
+        .vibes-track .vibe-circle:nth-child(7), .vibes-track .vibe-circle:nth-child(14) { background-image: url('OnAux-frat-party.png'); }
+
+        /* How-to visuals (vibes -> party) */
+        .howto-visual {
+            margin-top: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(40px, 6vw, 88px);
+            flex-wrap: wrap;
+        }
+        .howto-block { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .howto-shot {
+            width: clamp(220px, 26vw, 440px);
+            height: auto;
+            border-radius: 32px;
+            display: block;
+        }
+        .howto-caption-title {
+            margin-top: 0.75rem;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+            color: rgba(255,255,255,0.95);
+            font-stretch: expanded;
+        }
+        .howto-caption-text {
+            margin-top: 0.25rem;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 300;
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.85);
+            max-width: 30ch;
+            /* font-stretch: expanded; */
+        }
+        .howto-arrow {
+            font-size: clamp(28px, 4vw, 48px);
+            line-height: 1;
+            opacity: 0.9;
+            user-select: none;
+        }
+        @media screen and (max-width: 900px) {
+            .howto-arrow { transform: rotate(90deg); }
+        }
+
+        /* Hero bottom texts */
+        .hero-footnotes {
+            margin-top: 2.5rem;
+            overflow: hidden;
+            width: 100%;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.8);
+            font-stretch: expanded;
+            /* Edge fade */
+            -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1) 8%, rgba(0,0,0,1) 92%, rgba(0,0,0,0));
+            mask-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1) 8%, rgba(0,0,0,1) 92%, rgba(0,0,0,0));
+            position: relative;
+            z-index: 2;
+        }
+        .hero-footnotes .marquee__track {
+            display: inline-flex;
+            gap: 0;
+            white-space: nowrap;
+            will-change: transform;
+            animation: heroMarquee 45s linear infinite;
+        }
+        .hero-footnotes .marquee__track span { display: inline-flex; align-items: center; white-space: nowrap; }
+        .hero-footnotes .marquee__track span::after {
+            content: "•";
+            margin: 0 0.9rem;
+            color: rgba(255,255,255,0.55);
+        }
+
+        @keyframes heroMarquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        
+        @keyframes vibesMarquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        /* Additional gradient overlay for depth */
+        /* .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, 
+                rgba(233, 30, 99, 0.3) 0%, 
+                transparent 50%),
+                       radial-gradient(circle at 80% 20%, 
+                rgba(156, 39, 176, 0.3) 0%, 
+                transparent 50%);
+            background-size: 100% 100%;
+            z-index: 1;
+            animation: pulseOverlay 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+            transform-origin: center center;
+        } */
+
+       
+
+        .top-image {
+            display: block;
+            margin: 0 auto;
+            width: 90px;
+            height: auto;
+            z-index: 10;
+        }
+
+        .sway-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+            animation: sway 5s ease-in-out infinite alternate;
+            transform-origin: top center;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Anchor the disco ball to the very top center of the viewport */
+        .sway-anchor {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* CTA: email input + gradient button */
+        .cta-row {
+            margin-top: 1.75rem;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .cta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.5rem 0.5rem 1rem;
+            border-radius: 9999px;
+            background: rgba(0,0,0,0.35);
+            max-width: 520px;
+        }
+        .cta-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
+            font-size: 1rem;
+            padding: 0.4rem 0;
+            min-width: clamp(180px, 22vw, 280px);
+        }
+        .cta-input::placeholder { color: rgba(255,255,255,0.6); }
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.1rem;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #B94DF3, #DA59B4);
+            color: #fff;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 300;
+            font-size: 1.05rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 160ms ease, filter 160ms ease;
+        }
+        .cta-button:hover { transform: translateY(-1px); filter: brightness(1.05); }
+        .cta-button:active { transform: translateY(0); filter: brightness(0.98); }
+
+        @keyframes hueCycle {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        @keyframes sway {
+            0% {
+                transform: rotate(-12deg);
+            }
+            50% {
+                transform: rotate(12deg);
+            }
+            100% {
+                transform: rotate(-12deg);
+            }
+        }
+
+        /* FAQ section styles */
+        .faq {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-head {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .faq-title {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            font-stretch: expanded;
+            color: #fff;
+        }
+        .faq-subtitle {
+            margin-top: 0.6rem;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
+            font-size: clamp(1rem, 2.3vw, 1.25rem);
+            color: rgba(255,255,255,0.9);
+            font-stretch: expanded;
+        }
+        .faq-content {
+            margin-top: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+        .faq-item {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 0;
+        }
+        .faq-question {
+            padding: 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: rgba(255,255,255,0.95);
+            font-stretch: expanded;
+            transition: color 0.2s ease;
+        }
+        
+        .faq-question:hover {
+            color: rgba(255,255,255,1);
+        }
+        
+        .faq-toggle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.7);
+            transition: transform 0.2s ease, color 0.2s ease;
+            user-select: none;
+            transform: rotate(45deg);
+        }
+        .faq-answer {
+            padding: 0 0 1.5rem 0;
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
+            font-size: clamp(1rem, 2.2vw, 1.2rem);
+            color: rgba(255,255,255,0.85);
+            line-height: 1.6;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            opacity: 1;
+            padding-bottom: 1.5rem;
+        }
+        
+        .faq-item.active .faq-toggle {
+            transform: rotate(0deg);
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Footer section styles */
+        #footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 4rem 1.25rem 2rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .footer-disco {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .footer-sway-container {
+            animation: sway 5s ease-in-out infinite alternate;
+            transform-origin: top center;
+        }
+        
+        .footer-disco-ball {
+            width: 60px;
+            height: auto;
+            display: block;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 4rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer-section {
+            text-align: center;
+        }
+        
+        .footer-title {
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.95);
+            font-stretch: expanded;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .footer-link {
+            font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-link:hover {
+            color: rgba(255,255,255,0.95);
+        }
+        
+        @media screen and (max-width: 768px) {
+            .footer-links {
+                gap: 2.5rem;
+            }
+            
+            .footer-content {
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section id="hero" class="section">
+            <div class="wrapper">
+                <div class="container">
+                    <div class="hero-main">
+                        <div class="sway-anchor">
+    <div class="sway-container">
+        <img src="image%2040.png" alt="Disco Ball" class="top-image">
+    </div>
+                        </div>
+                        <h1 class="title">OnAux</h1>
+                        <p class="subtitle">the app that DJs the party for you</p>
+                        <p class="subtitle">(so you can focus on being hot)</p>
+                        <div class="cta-row">
+                            <form class="cta" onsubmit="return false;">
+                                <input class="cta-input" type="email" placeholder="email" aria-label="Email address" />
+                                <button class="cta-button" type="submit">join the beta</button>
+                            </form>
+                        </div>
+                    </div>
+                    <aside class="hero-aside" aria-hidden="true">
+                        <img src="OnAuxHero.png" alt="OnAux iPhone mockup" class="hero-phone">
+                    </aside>
+                </div>
+                <div class="hero-footnotes">
+                    <div class="marquee__track">
+                        <span>high key music, lowkey effort</span>
+                        <span>cause if you’re gonna get a noise complaint, it better be worth it</span>
+                        <span>no more performance anxiety</span>
+                        <span>your party deserves better music</span>
+                        <!-- duplicate for seamless loop -->
+                        <span aria-hidden="true">high key music, lowkey effort</span>
+                        <span aria-hidden="true">cause if you’re gonna get a noise complaint, it better be worth it</span>
+                        <span aria-hidden="true">no more performance anxiety</span>
+                        <span aria-hidden="true">your party deserves better music</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-to" class="section">
+            <div class="wrapper">
+                <div class="howto">
+                    <div class="howto-head">
+                        <h2 class="howto-title">put that phone down</h2>
+                        <p class="howto-subtext">and actually talk to that girl from econ</p>
+                    </div>
+                    <div class="howto-visual">
+                        <div class="howto-block">
+                            <img src="OnAux-vibes.png" alt="OnAux vibes selection" class="howto-shot">
+                            <div class="howto-caption-title">step 1: set the vibes</div>
+                            <div class="howto-caption-text">from frat basement and fancy-ish dinners, to karaoke night with swifites</div>
+                        </div>
+                        <span class="howto-arrow"></span>
+                        <div class="howto-block">
+                            <img src="OnAux-party.png" alt="OnAux party screen" class="howto-shot">
+                            <div class="howto-caption-title">step 2: party</div>
+                            <div class="howto-caption-text">OnAux handles all the music and plays only the best parts of each song... <br>y’know like a DJ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vibes" class="section">
+            <div class="wrapper">
+                <div class="vibes">
+                    <div class="vibes-head">
+                        <h2 class="howto-title">your vibes. our mix.</h2>
+                        <p class="howto-subtext vibes-subtext">but you can take the credit</p>
+                    </div>
+                                        <div class="vibes-scroll" aria-label="vibes carousel">
+                        <div class="vibes-track">
+                            <div class="vibe-circle"></div>
+                            <div class="vibe-circle"></div>
+                            <div class="vibe-circle"></div>
+                            <div class="vibe-circle"></div>
+                            <div class="vibe-circle"></div>
+                            <div class="vibe-circle"></div>
+                            <div class="vibe-circle"></div>
+                            <!-- duplicate for seamless loop -->
+                            <div class="vibe-circle" aria-hidden="true"></div>
+                            <div class="vibe-circle" aria-hidden="true"></div>
+                            <div class="vibe-circle" aria-hidden="true"></div>
+                            <div class="vibe-circle" aria-hidden="true"></div>
+                            <div class="vibe-circle" aria-hidden="true"></div>
+                            <div class="vibe-circle" aria-hidden="true"></div>
+                            <div class="vibe-circle" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="section">
+            <div class="wrapper">
+                <div class="faq">
+                    <div class="faq-head">
+                        <h2 class="faq-title">faq</h2>
+                        <p class="faq-subtitle">OnAux DJs your party</p>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>who is OnAux for?</span>
+                                <span class="faq-toggle">✕</span>
+                            </div>
+                            <div class="faq-answer">hot people (if you're reading this, that's probably you)</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>who is OnAux not for?</span>
+                                <span class="faq-toggle">✕</span>
+                            </div>
+                            <div class="faq-answer">ugly people (but we hear good music helps)</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>what kind of events does OnAux DJ best?</span>
+                                <span class="faq-toggle">✕</span>
+                            </div>
+                            <div class="faq-answer">pregames, birthdays, frat parties, house parties, kickbacks… basically anywhere you want great music without stressing about the aux.</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>who are you guys?</span>
+                                <span class="faq-toggle">✕</span>
+                            </div>
+                            <div class="faq-answer">Two brothers who got tired of babysitting playlists instead of hanging with our friends. So we built the AI DJ that we'd want to use. Also, we're both 6'4" in case that matters to you</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>are you guys trying to replace DJs?</span>
+                                <span class="faq-toggle">✕</span>
+                            </div>
+                            <div class="faq-answer">Nope. We love DJs. We're just bringing that DJ-level experience to parties and events where a live DJ isn't an option or in the budget.</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>do I need an Apple Music/Spotify account?</span>
+                                <span class="faq-toggle">✕</span>
+                            </div>
+                            <div class="faq-answer">A what?</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>how can I share feedback/collab?</span>
+                                <span class="faq-toggle">✕</span>
+                            </div>
+                            <div class="faq-answer">Slide into our DMs on Instagram or email us at info@onaux.ai.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cta-bottom" class="section">
+            <div class="wrapper">
+                <div class="container">
+                    <div class="cta-row">
+                        <form class="cta" onsubmit="return false;">
+                            <input class="cta-input" type="email" placeholder="email" aria-label="Email address" />
+                            <button class="cta-button" type="submit">join the beta</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer id="footer" class="section">
+            <div class="wrapper">
+                <div class="footer-content">
+                    <div class="footer-disco">
+                        <div class="footer-sway-container">
+                            <img src="image%2040.png" alt="Disco Ball" class="footer-disco-ball">
+                        </div>
+                    </div>
+                    
+                    <div class="footer-links">
+                        <div class="footer-section">
+                            <h3 class="footer-title">important stuff</h3>
+                            <div class="footer-list">
+                                <a href="#" class="footer-link">terms</a>
+                                <a href="#" class="footer-link">privacy</a>
+                            </div>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h3 class="footer-title">find us</h3>
+                            <div class="footer-list">
+                                <a href="#" class="footer-link">instagram</a>
+                                <a href="#" class="footer-link">twitter</a>
+                                <a href="#" class="footer-link">linkedin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        function toggleFaq(element) {
+            const faqItem = element.closest('.faq-item');
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // If this item wasn't active, make it active
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
