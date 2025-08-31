@@ -36,8 +36,8 @@
     <link rel="canonical" href="https://onaux.ai/">
     
     <!-- Additional Meta Tags -->
-    <meta name="theme-color" content="#FB4BBF">
-    <meta name="msapplication-TileColor" content="#FB4BBF">
+    <!-- <meta name="theme-color" content="#FB4BBF">
+    <meta name="msapplication-TileColor" content="#FB4BBF"> -->
     <meta name="application-name" content="OnAux">
     
     <!-- Preconnect for performance -->
@@ -198,8 +198,18 @@
             gap: 0rem;
         }
 
+        /* Mobile hero phone container (hidden by default) */
+        .hero-mobile { display: none; }
+        .hero-mobile-frame { position: relative; width: clamp(220px, 62vw, 340px); margin: 2rem auto 0; }
+
         @media screen and (max-width: 900px) {
             .hero-aside { display: none; }
+            .hero-mobile { display: block; }
+            .hero-main { padding-top: 1.5rem; }
+            .hero-mobile-frame { margin-top: 2.75rem; }
+            .hero-mobile .hero-phone { width: 100%; height: auto; display: block; }
+            .hero-mobile .hero-phone-2, .hero-mobile .hero-phone-3 { position: absolute; top: 0; left: 0; }
+            .hero-mobile .hero-overlay { width: 74%; height: auto; }
         }
 
         /* Slightly reduce phone size on medium widths to avoid overlap */
@@ -306,7 +316,7 @@
         .howto { text-align: center; }
         .howto-head { text-align: left; }
         .howto-title {
-            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-size: clamp(2.8rem, 6vw, 4.2rem);
             font-weight: 700;
             font-stretch: expanded;
         }
@@ -318,6 +328,7 @@
             color: rgba(255,255,255,0.9);
             font-stretch: expanded;
             transform: translateX(50px);
+            max-width: 32ch;
         }
 
         /* Vibes section heading uses same typography, right aligned */
@@ -326,7 +337,7 @@
         .vibes-subtext { text-align: right; transform: translateX(-50px); }
 
         /* Vibes horizontal scroll */
-        .vibes-scroll {
+        .vibes-scroll { 
             margin-top: 2.25rem;
             overflow: hidden;
             -ms-overflow-style: none;
@@ -382,6 +393,7 @@
         }
         .howto-caption-title {
             margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
             font-family: "Mona Sans Medium Wide", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-weight: 600;
             font-size: 2rem;
@@ -405,6 +417,18 @@
         }
         @media screen and (max-width: 900px) {
             .howto-arrow { transform: rotate(90deg); }
+            .howto-shot {
+                width: 90vw;
+                max-width: 500px;
+            }
+            .howto-head, .vibes-head {
+                text-align: center;
+            }
+            .howto-subtext, .vibes-subtext {
+                transform: translateX(0);
+                text-align: center;
+                max-width: none;
+            }
         }
 
         /* Hero bottom texts */
@@ -570,7 +594,7 @@
             margin-bottom: 3rem;
         }
         .faq-title {
-            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-size: clamp(2.8rem, 6vw, 4.2rem);
             font-weight: 700;
             font-stretch: expanded;
             color: #fff;
@@ -745,6 +769,16 @@
                                 <button class="cta-button" type="submit">join the waitlist</button>
                             </form>
                         </div>
+                        <div class="hero-mobile">
+                            <div class="hero-mobile-frame">
+                                <img src="OnAux-hero-pink.png" alt="OnAux iPhone mockup" class="hero-phone hero-phone-1">
+                                <img src="OnAux-hero-orange.png" alt="OnAux iPhone mockup" class="hero-phone hero-phone-2">
+                                <img src="OnAux-hero-blue.png" alt="Third overlay base" class="hero-phone hero-phone-3">
+                                <img src="OnAux-hero-summer-darty.png" alt="Summer darty overlay" class="hero-overlay hero-overlay-1">
+                                <img src="OnAux-hero-pregame.png" alt="Pregame overlay" class="hero-overlay hero-overlay-2">
+                                <img src="OnAux-hero-rooftop-party.png" alt="Third overlay" class="hero-overlay hero-overlay-3">
+                            </div>
+                        </div>
                     </div>
                     <aside class="hero-aside" aria-hidden="true">
                         <img src="OnAux-hero-pink.png" alt="OnAux iPhone mockup" class="hero-phone hero-phone-1">
@@ -758,14 +792,11 @@
                 <div class="hero-footnotes">
                     <div class="marquee__track">
                         <span>high key music, lowkey effort</span>
+                        <span>the cheapest way to get a DJ at your party</span>
                         <span>cause if you’re gonna get a noise complaint, it better be worth it</span>
                         <span>no more performance anxiety</span>
+                        <span>the cheapest way to get a DJ at your party</span>
                         <span>your party deserves better music</span>
-                        <!-- duplicate for seamless loop -->
-                        <span aria-hidden="true">high key music, lowkey effort</span>
-                        <span aria-hidden="true">cause if you’re gonna get a noise complaint, it better be worth it</span>
-                        <span aria-hidden="true">no more performance anxiety</span>
-                        <span aria-hidden="true">your party deserves better music</span>
                     </div>
                 </div>
             </div>
@@ -780,15 +811,15 @@
                     </div>
                     <div class="howto-visual">
                         <div class="howto-block">
-                            <img src="OnAux-vibes.png" alt="OnAux vibes selection" class="howto-shot">
                             <div class="howto-caption-title">step 1: set the vibes</div>
+                            <img src="OnAux-vibes.png" alt="OnAux vibes selection" class="howto-shot">
                             <div class="howto-caption-text">from frat basement and fancy-ish dinners, to karaoke night with swifites</div>
                         </div>
                         <span class="howto-arrow"></span>
                         <div class="howto-block">
-                            <img src="OnAux-party.png" alt="OnAux party screen" class="howto-shot">
                             <div class="howto-caption-title">step 2: party</div>
-                            <div class="howto-caption-text">OnAux handles all the music and plays only the best parts of each song... <br>y’know like a DJ</div>
+                            <img src="OnAux-party.png" alt="OnAux party screen" class="howto-shot">
+                            <div class="howto-caption-text">OnAux handles all the music and plays only the best parts of each song... <br>y'know like a DJ</div>
                         </div>
                     </div>
                 </div>
