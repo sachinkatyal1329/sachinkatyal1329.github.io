@@ -118,9 +118,6 @@
             display: block; 
         }
         
-        .hero-phone-1 {
-            /* Always visible */
-        }
         
         .hero-phone-2 {
             animation: fadePhone2 30s linear infinite;
@@ -428,6 +425,17 @@
                 transform: translateX(0);
                 text-align: center;
                 max-width: none;
+            }
+        }
+
+        /* Large screens: align vibes subtext flush-right with configurable offset */
+        @media screen and (min-width: 901px) {
+            .vibes-subtext {
+                display: inline-block;
+                /* Offset from right edge; override with --vibes-right-offset if desired */
+                margin-right: var(--vibes-right-offset, 75px);
+                max-width: none;
+                transform: none;
             }
         }
 
