@@ -35,6 +35,14 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://onaux.ai/">
     
+    <!-- Preload critical hero images to avoid layout shifts -->
+    <link rel="preload" as="image" href="OnAux-hero-pink.png">
+    <link rel="preload" as="image" href="OnAux-hero-orange.png">
+    <link rel="preload" as="image" href="OnAux-hero-blue.png">
+    <link rel="preload" as="image" href="OnAux-hero-summer-darty.png">
+    <link rel="preload" as="image" href="OnAux-hero-pregame.png">
+    <link rel="preload" as="image" href="OnAux-hero-rooftop-party.png">
+    
     <!-- Additional Meta Tags -->
     <!-- <meta name="theme-color" content="#FB4BBF">
     <meta name="msapplication-TileColor" content="#FB4BBF"> -->
@@ -111,12 +119,14 @@
         }
 
         .hero-main { display: flex; flex-direction: column; align-items: center; }
-        .hero-aside { position: absolute; left: calc(50% + 360px); top: 50%; transform: translateY(-50%); pointer-events: none; }
+        .hero-aside { position: absolute; left: calc(50% + 360px); top: 50%; transform: translateY(-50%); pointer-events: none; width: clamp(160px, 20vw, 280px); aspect-ratio: 9 / 19.5; }
         .hero-phone { 
             width: clamp(160px, 20vw, 280px); 
             height: auto; 
             display: block; 
+            aspect-ratio: 9 / 19.5;
         }
+        .hero-aside .hero-phone { width: 100%; height: auto; display: block; }
         
         
         .hero-phone-2 {
@@ -142,10 +152,13 @@
             width: clamp(120px, 15vw, 210px); 
             height: auto; 
             z-index: 10; 
+            aspect-ratio: 1 / 1;
             /* Ensure centered before animation applies */
             transform: translate(-50%, -50%);
             transform-origin: center center;
             animation-fill-mode: both;
+            /* Hide until images are fully loaded */
+            visibility: hidden;
         }
         
         .hero-overlay-1 {
@@ -201,7 +214,7 @@
 
         /* Mobile hero phone container (hidden by default) */
         .hero-mobile { display: none; }
-        .hero-mobile-frame { position: relative; width: clamp(220px, 62vw, 340px); margin: 2rem auto 0; }
+        .hero-mobile-frame { position: relative; width: clamp(220px, 62vw, 340px); margin: 2rem auto 0; aspect-ratio: 9 / 19.5; }
 
         @media screen and (max-width: 900px) {
             .hero-aside { display: none; }
@@ -232,7 +245,7 @@
         /* Hero section background and centering */
         #hero {
             position: relative;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -988,6 +1001,13 @@
                 faqItem.classList.add('active');
             }
         }
+
+        // Show hero overlays after all images are loaded
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.hero-overlay').forEach(el => {
+                el.style.visibility = 'visible';
+            });
+        });
 
         // Handle waitlist form submissions
         document.addEventListener('DOMContentLoaded', function() {
