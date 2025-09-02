@@ -151,6 +151,10 @@
             width: clamp(120px, 15vw, 210px); 
             height: auto; 
             z-index: 10; 
+            /* Ensure centered before animation applies */
+            transform: translate(-50%, -50%);
+            transform-origin: center center;
+            animation-fill-mode: both;
             /* Hide until images are fully loaded */
             visibility: hidden;
         }
