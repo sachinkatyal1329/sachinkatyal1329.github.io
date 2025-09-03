@@ -451,12 +451,12 @@
             }
         });
 
-        // Handle login (used by both form submit and auto-login)
-        async function handleLogin(token) {
-            await authenticateAndLoadData(token);
-            // Save token to localStorage for persistence
-            localStorage.setItem('adminToken', token);
-        }
+                 // Handle login (used by both form submit and auto-login)
+         async function handleLogin(token) {
+             await authenticateAndLoadData(token);
+             // Save token to localStorage for persistence
+             localStorage.setItem('intellibeat_admin_token', token);
+         }
 
         // Logout handler
         logoutBtn.addEventListener('click', () => {
