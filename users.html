@@ -500,6 +500,8 @@
                                     <th>Join Date</th>
                                     <th>Status</th>
                                     <th>Usage</th>
+                                    <th>Email Sent</th>
+                                    <th>Followed Up</th>
                                 </tr>
                             </thead>
                             <tbody id="usersTableBody">
@@ -712,6 +714,20 @@
                                 </span>
                             </button>
                         </td>
+                        <td>
+                            <button class="toggle-btn" onclick="toggleEmailSentStatus('${user._id}')">
+                                <span class="status-badge ${user.emailSent ? 'status-accepted' : 'status-pending'}">
+                                    ${user.emailSent ? 'Sent' : 'Not Sent'}
+                                </span>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="toggle-btn" onclick="toggleFollowedUpStatus('${user._id}')">
+                                <span class="status-badge ${user.followedUp ? 'status-accepted' : 'status-pending'}">
+                                    ${user.followedUp ? 'Followed Up' : 'Not Followed Up'}
+                                </span>
+                            </button>
+                        </td>
                     </tr>
                 `;
             }).join('');
@@ -792,13 +808,45 @@
             renderTable();
         }
 
+        // Toggle user email sent status
+        function toggleEmailSentStatus(userId) {
+            const user = waitlistData.find(u => u._id === userId);
+            if (!user) return;
+
+            // Toggle the emailSent status
+            user.emailSent = !user.emailSent;
+
+            // Track this change
+            trackUserChange(userId, user);
+            
+            // Update display
+            renderTable();
+        }
+
+        // Toggle user followed up status
+        function toggleFollowedUpStatus(userId) {
+            const user = waitlistData.find(u => u._id === userId);
+            if (!user) return;
+
+            // Toggle the followedUp status
+            user.followedUp = !user.followedUp;
+
+            // Track this change
+            trackUserChange(userId, user);
+            
+            // Update display
+            renderTable();
+        }
+
         // Store original states when data is loaded
         function storeOriginalStates() {
             originalUserStates.clear();
             waitlistData.forEach(user => {
                 originalUserStates.set(user._id, {
                     accepted: user.accepted,
-                    used: user.used
+                    used: user.used,
+                    emailSent: user.emailSent || false,
+                    followedUp: user.followedUp || false
                 });
             });
         }
@@ -810,7 +858,9 @@
             if (originalState) {
                 // Check if current state differs from original
                 const hasChanged = originalState.accepted !== userData.accepted || 
-                                 originalState.used !== userData.used;
+                                 originalState.used !== userData.used ||
+                                 originalState.emailSent !== (userData.emailSent || false) ||
+                                 originalState.followedUp !== (userData.followedUp || false);
                 
                 if (hasChanged) {
                     // User has changes from original state
@@ -862,14 +912,16 @@
                     const user = waitlistData.find(u => u._id === userId);
                     if (!user) return;
                     
-                    const statusKey = `${userData.accepted}-${userData.used}`;
+                    const statusKey = `${userData.accepted}-${userData.used}-${userData.emailSent || false}-${userData.followedUp || false}`;
                     
                     if (!statusUpdates[statusKey]) {
                         statusUpdates[statusKey] = {
                             emails: [],
                             statusQuery: {
                                 accepted: userData.accepted,
-                                used: userData.used
+                                used: userData.used,
+                                emailSent: userData.emailSent || false,
+                                followedUp: userData.followedUp || false
                             }
                         };
                     }
